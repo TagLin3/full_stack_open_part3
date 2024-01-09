@@ -7,9 +7,7 @@ const app = express();
 app.use(express.static("dist"));
 app.use(cors());
 app.use(express.json());
-morgan.token("reqbody", (req, res) => {
-  return JSON.stringify(req.body);
-});
+morgan.token("reqbody", (req) => JSON.stringify(req.body));
 app.use(
   morgan(
     ":method :url :status :res[content-length] - :response-time ms :reqbody",
@@ -45,7 +43,7 @@ app.get("/api/persons/:id", (req, res, next) => {
 });
 
 app.delete("/api/persons/:id", (req, res, next) => {
-  Person.findByIdAndDelete(req.params.id).then((result) => {
+  Person.findByIdAndDelete(req.params.id).then(() => {
     res.status(204).end();
   }).catch((e) => next(e));
 });
@@ -62,7 +60,7 @@ app.post("/api/persons", (req, res, next) => {
 });
 
 app.put("/api/persons/:id", (req, res, next) => {
-  const body = req.body;
+  const { body } = req;
   const updatedPerson = {
     name: body.name,
     number: body.number,
